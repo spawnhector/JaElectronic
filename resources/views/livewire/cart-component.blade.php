@@ -15,72 +15,106 @@
         <div class="wrap-iten-in-cart">
             <h3 class="box-title">Products Name</h3>
             <ul class="products-cart">
-                <li class="pr-cart-item">
-                    <div class="product-image">
-                        <figure><img src="assets/images/products/digital_18.jpg" alt=""></figure>
-                    </div>
-                    <div class="product-name">
-                        <a class="link-to-product" href="#">Radiant-360 R6 Wireless Omnidirectional Speaker [White]</a>
-                    </div>
-                    <div class="price-field produtc-price"><p class="price">$256.00</p></div>
-                    <div class="quantity">
-                        <div class="quantity-input">
-                            <input type="text" name="product-quatity" value="1" data-max="120" pattern="[0-9]*" >									
-                            <a class="btn btn-increase" href="#"></a>
-                            <a class="btn btn-reduce" href="#"></a>
-                        </div>
-                    </div>
-                    <div class="price-field sub-total"><p class="price">$256.00</p></div>
-                    <div class="delete">
-                        <a href="#" class="btn btn-delete" title="">
-                            <span>Delete from your cart</span>
-                            <i class="fa fa-times-circle" aria-hidden="true"></i>
-                        </a>
-                    </div>
-                </li>
-                <li class="pr-cart-item">
-                    <div class="product-image">
-                        <figure><img src="assets/images/products/digital_20.jpg" alt=""></figure>
-                    </div>
-                    <div class="product-name">
-                        <a class="link-to-product" href="#">Radiant-360 R6 Wireless Omnidirectional Speaker [White]</a>
-                    </div>
-                    <div class="price-field produtc-price"><p class="price">$256.00</p></div>
-                    <div class="quantity">
-                        <div class="quantity-input">
-                            <input type="text" name="product-quatity" value="1" data-max="120" pattern="[0-9]*">									
-                            <a class="btn btn-increase" href="#"></a>
-                            <a class="btn btn-reduce" href="#"></a>
-                        </div>
-                    </div>
-                    <div class="price-field sub-total"><p class="price">$256.00</p></div>
-                    <div class="delete">
-                        <a href="#" class="btn btn-delete" title="">
-                            <span>Delete from your cart</span>
-                            <i class="fa fa-times-circle" aria-hidden="true"></i>
-                        </a>
-                    </div>
-                </li>												
+                @if ($cartItems)
+                {{-- {{dd($cartItems)}} --}}
+                @php
+                    $count = 0;
+                @endphp
+                @foreach ($cartItems as $item)
+                        <li class="pr-cart-item">
+                            <div class="product-image">
+                                <figure><img src="assets/images/products/digital_18.jpg" alt=""></figure>
+                            </div>
+                            <div class="product-name">
+                                <a class="link-to-product" href="#">{{$item['name']}}</a>
+                            </div>
+                            <div class="price-field produtc-price"><p class="price">${{$item['price']}}</p></div>
+                            <div class="quantity">
+                                <div class="quantity-input">
+                                    <input wire:model='cartItems.{{$count}}.qty' type="text" name="product-quatity" data-max="120" pattern="[1-9]*" >									
+                                    <a class="btn btn-increase" wire:click='qty("+",{{$item['id']}},{{$count}})'></a>
+                                    <a class="btn btn-reduce" wire:click='qty("-",{{$item['id']}},{{$count}})'></a>
+                                </div>
+                            </div>
+                            <div class="price-field sub-total"><p class="price">${{$this->productPrice($item['price'],$item['qty'])}}</p></div>
+                            <div class="delete" wire:click='deleteFromCart({{$count}})'>
+                                <a href="#" class="btn" title="">
+                                    <span>Delete from your cart</span>
+                                    <i class="fa fa-times-circle" aria-hidden="true"></i>
+                                </a>
+                            </div>
+                        </li>
+                        @php
+                            ++$count;
+                        @endphp
+                    @endforeach
+                @endif											
             </ul>
         </div>
 
         <div class="summary">
             <div class="order-summary">
                 <h4 class="title-box">Order Summary</h4>
-                <p class="summary-info"><span class="title">Subtotal</span><b class="index">$512.00</b></p>
-                <p class="summary-info"><span class="title">Shipping</span><b class="index">Free Shipping</b></p>
-                <p class="summary-info total-info "><span class="title">Total</span><b class="index">$512.00</b></p>
+                <p class="summary-info"><span class="title">Subtotal</span><b class="index">${{$this->checkSubtotal()}}</b></p>
+                <p class="summary-info"><span class="title">Shipping</span>
+                    <b class="index">
+                        @if ($shipping)
+                            {{$shipping}}
+                        @else
+                            Free Shipping
+                        @endif
+                    </b>
+                </p>
+                <p class="summary-info total-info "><span class="title">Total</span>
+                    <b class="index">
+                        @if (isset($this->checkTotal()['discount']))
+                            <span>
+                                ${{$this->checkTotal()['discount']}}
+                                <span>
+                                    <strike>${{$this->checkTotal()['total']}}</strike>
+                                </span>
+                            </span>
+                        @else
+                        <span>
+                            ${{$this->checkTotal()['total']}}
+                        </span>
+                        @endif
+                    </b>
+                </p>
             </div>
             <div class="checkout-info">
-                <label class="checkbox-field">
-                    <input class="frm-input " name="have-code" id="have-code" value="" type="checkbox"><span>I have promo code</span>
-                </label>
+                <div class="grid">
+                    <label class="checkbox-field">
+                        <input wire:model='hasPromo' class="frm-input " name="have-code" id="have-code" value="" type="checkbox"><span>I have promo code</span>
+                        @if ($hasPromo)
+                            <fieldset class="wrap-input">
+                                <input wire:model='promoCode' type="text" class="promo" name="email" placeholder="Enter Code">
+                                @if (session()->has('promoSuccess'))
+                                    <span style="color: green;">
+                                        Code Valid!, 
+                                        <span style="color: red;">
+                                            -{{session()->pull('promoSuccess')}}%
+                                        </span>
+                                    </span>
+                                @endif
+                                @if (session()->has('promoError'))
+                                    <span style="color: red;">
+                                        {{session()->pull('promoError')}}
+                                    </span>
+                                @endif
+                            </fieldset>
+                        @endif
+                    </label>
+                    <label class="checkbox-field">
+                        <input wire:model='createAccount' class="frm-input " value="" type="checkbox"><span>Create Account</span>
+                    </label>
+                </div>
                 <a class="btn btn-checkout" href="checkout.html">Check out</a>
-                <a class="link-to-shop" href="shop.html">Continue Shopping<i class="fa fa-arrow-circle-right" aria-hidden="true"></i></a>
+                <a class="link-to-shop" href="{{route('shop')}}">Continue Shopping<i class="fa fa-arrow-circle-right" aria-hidden="true"></i></a>
             </div>
             <div class="update-clear">
-                <a class="btn btn-clear" href="#">Clear Shopping Cart</a>
-                <a class="btn btn-update" href="#">Update Shopping Cart</a>
+                <a class="btn btn-clear" wire:click='clearCart'>Clear Shopping Cart</a>
+                {{-- <a class="btn btn-update" href="#">Update Shopping Cart</a> --}}
             </div>
         </div>
 

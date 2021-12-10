@@ -15,7 +15,9 @@
 	<link rel="stylesheet" type="text/css" href="{{ asset('assets/css/chosen.min.css') }}">
 	<link rel="stylesheet" type="text/css" href="{{ asset('assets/css/style.css') }}">
 	<link rel="stylesheet" type="text/css" href="{{ asset('assets/css/color-01.css') }}">
+	<link rel="stylesheet" type="text/css" href="{{ asset('assets/css/loader.css') }}">
     @livewireStyles
+    @livewireScripts
 </head>
 <body class="home-page home-01 ">
 
@@ -115,15 +117,7 @@
 							<div class="wrap-icon-section wishlist">
 		
 							</div>
-							<div class="wrap-icon-section minicart">
-								<a href="#" class="link-direction">
-									<i class="fa fa-shopping-basket" aria-hidden="true"></i>
-									<div class="left-info">
-										<span class="index">4 items</span>
-										<span class="title">CART</span>
-									</div>
-								</a>
-							</div>
+							@livewire('cart-bucket')
 							<div class="wrap-icon-section show-up-after-1024">
 								<a href="#" class="mobile-navigation">
 									<span></span>
@@ -147,12 +141,6 @@
 								</li>
 								<li class="menu-item">
 									<a href="/shop" class="link-term mercado-item-title">Shop</a>
-								</li>
-								<li class="menu-item">
-									<a href="/cart" class="link-term mercado-item-title">Cart</a>
-								</li>
-								<li class="menu-item">
-									<a href="/checkout" class="link-term mercado-item-title">Checkout</a>
 								</li>
 								<li class="menu-item">
 									<a href="contact-us.html" class="link-term mercado-item-title">Contact Us</a>
@@ -180,6 +168,11 @@
 	<script src="{{ asset('assets/js/jquery.countdown.min.js') }}"></script>
 	<script src="{{ asset('assets/js/jquery.sticky.js') }}"></script>
 	<script src="{{ asset('assets/js/functions.js') }}"></script>
-    @livewireScripts
+	<script src="https://code.jquery.com/jquery-3.6.0.js" integrity="sha256-H+K7U5CnXl1h5ywQfKtSj8PCmoN9aaq30gDh27Xc0jk=" crossorigin="anonymous"></script>
+	<script>
+		Livewire.on('alert', postId => {
+			// alert('A post was added with the id of: ' + postId);
+		})
+	</script>
 </body>
 </html>

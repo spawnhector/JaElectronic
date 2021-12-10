@@ -17,15 +17,15 @@ Route::get('/',HomeComponent::class);
 
 Route::get('/home',HomeComponent::class);
 
-Route::get('/shop',ShopComponent::class);
+Route::get('/shop',ShopComponent::class)->name('shop');
 
-Route::get('/cart',CartComponent::class);
+Route::get('/cart',CartComponent::class)->name('cart');
 
-Route::get('/checkout',CheckoutComponent::class);
+Route::get('/checkout',CheckoutComponent::class)->name('checkout');
 
-Route::get('/login',LoginComponent::class);
+Route::get('/login',LoginComponent::class)->name('login');
 
-Route::get('/register',RegisterComponent::class);
+Route::get('/register',RegisterComponent::class)->name('register');
 
 //For User or Customer
 // Route::get('/user/dashboard',UserDashboardComponent::class)->name('user.dashboard');

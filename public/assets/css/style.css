@@ -68,6 +68,26 @@ button:hover, button:focus, button:visited, button:active{
 	text-decoration: none;
 	outline: none;
 }
+.pointer{
+    cursor: pointer;
+}
+
+.inline{
+    display: inline;
+}
+.grid{
+    display: grid;
+}
+
+.inline-block{
+    display: inline-block;
+}
+
+.promo{
+    border: 0.5px solid red;
+    padding: 7px;
+}
+
 .mercado-panel a{
     color: #666666;
 }
